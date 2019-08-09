@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import "./App.css";
-// import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-// import { faCoffee } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faKiwiBird } from "@fortawesome/free-solid-svg-icons";
 
 class App extends Component {
   state = { editValue: "", toDoArray: [] };
@@ -25,6 +25,15 @@ class App extends Component {
     });
   };
 
+  handleDelete = key => {
+    this.setState(state => {
+      const toDoArray = state.toDoArray.filter((item, j) => key !== j);
+      return {
+        toDoArray
+      };
+    });
+  };
+
   render() {
     return (
       <div className="App">
@@ -38,7 +47,15 @@ class App extends Component {
             />
           </form>
           {this.state.toDoArray.map((todo, key) => {
-            return <li key={key}>{todo}</li>;
+            return (
+              <li key={key}>
+                {todo}
+                <FontAwesomeIcon
+                  icon={faKiwiBird}
+                  onClick={() => this.handleDelete(key)}
+                />
+              </li>
+            );
           })}
         </header>
       </div>
