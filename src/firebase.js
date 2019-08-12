@@ -1,3 +1,8 @@
+import * as firebase from "firebase/app";
+
+import "firebase/auth";
+import "firebase/firestore";
+
 const firebaseConfig = {
   apiKey: "AIzaSyBGMIBMOcKUoNYf3lBPw60UTV7REcxUARU",
   authDomain: "to-do-brief.firebaseapp.com",
@@ -8,10 +13,10 @@ const firebaseConfig = {
   appId: "1:301390009829:web:a6b63b8b126da505"
 };
 
-firebase.initializeApp({
-  apiKey: "AIzaSyBGMIBMOcKUoNYf3lBPw60UTV7REcxUARU",
-  authDomain: "to-do-brief.firebaseapp.com",
-  projectId: "to-do-brief"
-});
+firebase.initializeApp(firebaseConfig);
 
-var db = firebase.firestore();
+export const provider = new firebase.auth.GoogleAuthProvider();
+
+export const firestore = firebase.firestore();
+
+export default firebase;

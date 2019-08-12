@@ -2,9 +2,38 @@ import React, { Component } from "react";
 import "./App.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faKiwiBird } from "@fortawesome/free-solid-svg-icons";
+import firebase, { provider } from "./firebase";
 
 class App extends Component {
   state = { editValue: "", toDoArray: [] };
+
+  signIn = () => {
+    firebase
+      .auth()
+      .signInWithPopup(provider)
+      .then(function(result) {
+        // This gives you a Google Access Token. You can use it to access the Google API.
+        var token = result.credential.accessToken;
+        // The signed-in user info.
+        var user = result.user;
+        this.setState({
+          user
+        });
+        this.checkForUserCollection(user.uid);
+        // ...
+      })
+      .catch(function(error) {
+        console.log(error);
+        // Handle Errors here.
+        var errorCode = error.code;
+        var errorMessage = error.message;
+        // The email of the user's account used.
+        var email = error.email;
+        // The firebase.auth.AuthCredential type that was used.
+        var credential = error.credential;
+        // ...
+      });
+  };
 
   handleChange = event => {
     this.setState({ editValue: event.target.value });
@@ -57,6 +86,7 @@ class App extends Component {
               </li>
             );
           })}
+          <button onClick={this.signIn}>Sign In</button>
         </header>
       </div>
     );
