@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import "./App.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faKiwiBird } from "@fortawesome/free-solid-svg-icons";
-import firebase, { provider } from "./firebase";
+import firebase, { provider, firestore } from "./firebase";
 
 class App extends Component {
   state = { editValue: "", toDoArray: [] };
@@ -11,7 +11,7 @@ class App extends Component {
     firebase
       .auth()
       .signInWithPopup(provider)
-      .then(function(result) {
+      .then(result => {
         // This gives you a Google Access Token. You can use it to access the Google API.
         var token = result.credential.accessToken;
         // The signed-in user info.
@@ -34,6 +34,43 @@ class App extends Component {
         // ...
       });
   };
+
+  checkForUserCollection = userToken => {
+    firestore
+      .collection("user")
+      .doc(userToken)
+      .get()
+      .then(querySnapshot => {
+        if (!querySnapshot.data()) {
+          console.log("user data doesn't exist yet");
+          console.log("making user collection in database");
+          this.createUserCollection(userToken);
+        } else {
+          console.log("user data exists already");
+          firestore
+            .collection("user")
+            .doc(userToken)
+            .get()
+            .then(querySnapshot => {
+              const addedArray = querySnapshot.data().toDo;
+              this.setState({ toDoArray: Object.entries(addedArray) });
+            });
+        }
+      })
+      .catch(function(error) {
+        console.log("Error getting document:", error);
+        return null;
+      });
+  };
+
+  createUserCollection(userToken) {
+    firestore
+      .collection("user")
+      .doc(userToken)
+      .set({
+        toDo: this.state.toDoArray
+      });
+  }
 
   handleChange = event => {
     this.setState({ editValue: event.target.value });
