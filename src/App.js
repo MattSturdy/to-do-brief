@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import "./App.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faKiwiBird } from "@fortawesome/free-solid-svg-icons";
+import { faKiwiBird , faOtter} from "@fortawesome/free-solid-svg-icons";
 import firebase, { provider, firestore } from "./firebase";
 
 class App extends Component {
-  state = { editValue: "", toDoArray: [] };
+  state = { editValue: "", toDoArray: [] , user:"", completeArray:[]};
 
   signIn = () => {
     firebase
@@ -13,11 +13,11 @@ class App extends Component {
       .signInWithPopup(provider)
       .then(result => {
         // This gives you a Google Access Token. You can use it to access the Google API.
-        var token = result.credential.accessToken;
+        const token = result.credential.accessToken;
         // The signed-in user info.
-        var user = result.user;
+        const user = result.user;
         this.setState({
-          user
+          user: user.uid
         });
         this.checkForUserCollection(user.uid);
         // ...
@@ -25,13 +25,28 @@ class App extends Component {
       .catch(function(error) {
         console.log(error);
         // Handle Errors here.
-        var errorCode = error.code;
-        var errorMessage = error.message;
-        // The email of the user's account used.
-        var email = error.email;
-        // The firebase.auth.AuthCredential type that was used.
-        var credential = error.credential;
+        // var errorCode = error.code;
+        // var errorMessage = error.message;
+        // // The email of the user's account used.
+        // var email = error.email;
+        // // The firebase.auth.AuthCredential type that was used.
+        // var credential = error.credential;
         // ...
+      });
+  };
+
+
+  signOut = () => {
+    console.log("testing signout");
+    firebase
+      .auth()
+      .signOut()
+      .then( ()=> {
+        this.setState({toDoArray: [], completeArray:[]})
+        // Sign-out successful.
+      })
+      .catch(function(error) {
+        // An error happened.
       });
   };
 
@@ -53,7 +68,10 @@ class App extends Component {
             .get()
             .then(querySnapshot => {
               const addedArray = querySnapshot.data().toDo;
-              this.setState({ toDoArray: Object.entries(addedArray) });
+              const toDoArray = [...this.state.toDoArray, ...addedArray]
+              const addedCompleteArray = querySnapshot.data().complete;
+              const completeArray=[...this.state.completeArray, ...addedCompleteArray]
+              this.setState({ toDoArray, completeArray });
             });
         }
       })
@@ -68,7 +86,7 @@ class App extends Component {
       .collection("user")
       .doc(userToken)
       .set({
-        toDo: this.state.toDoArray
+        toDo: this.state.toDoArray, complete: this.state.completeArray
       });
   }
 
@@ -100,6 +118,31 @@ class App extends Component {
     });
   };
 
+  handleComplete = key => {
+    this.setState(state => {
+      const completeArray = [...state.completeArray, state.toDoArray[key]]
+      const toDoArray = state.toDoArray.filter((item, j) => key !== j);
+      return {
+        toDoArray, completeArray
+      }
+    })
+  }
+
+  handleUnComplete = key => {
+    this.setState(state => {
+      const  toDoArray = [...state.toDoArray, state.completeArray[key]]
+      const completeArray = state.completeArray.filter((item, j) => key !== j);
+      return {
+        toDoArray, completeArray
+      }
+    })
+  }
+
+  saveToDo =(user)=>{
+    this.createUserCollection(user);
+    alert("your ToDo has been saved")
+  }
+
   render() {
     return (
       <div className="App">
@@ -120,10 +163,32 @@ class App extends Component {
                   icon={faKiwiBird}
                   onClick={() => this.handleDelete(key)}
                 />
+                <FontAwesomeIcon
+                  icon={faOtter}
+                  onClick={() => this.handleComplete(key)}
+                />
               </li>
             );
           })}
+
           <button onClick={this.signIn}>Sign In</button>
+          <button onClick={this.signOut}>Sign Out</button>
+          <button onClick={()=>this.saveToDo(this.state.user)}>Save your To do</button>
+          {this.state.completeArray.map((todo, key) => {
+            return (
+              <li key={key}>
+                {todo}
+                <FontAwesomeIcon
+                  icon={faKiwiBird}
+                  onClick={() => this.handleDelete(key)}
+                />
+                <FontAwesomeIcon
+                  icon={faOtter}
+                  onClick={() => this.handleUnComplete(key)}
+                />
+              </li>
+            )
+          })}
         </header>
       </div>
     );
