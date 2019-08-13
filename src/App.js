@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import "./App.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faKiwiBird , faOtter} from "@fortawesome/free-solid-svg-icons";
+import { faKiwiBird , faOtter, faHammer} from "@fortawesome/free-solid-svg-icons";
 import firebase, { provider, firestore } from "./firebase";
 
 class App extends Component {
-  state = { editValue: "", toDoArray: [] , user:"", completeArray:[]};
+  state = { editValue: "", toDoArray: [] , user:"", completeArray:[], userName:""};
 
   signIn = () => {
     firebase
@@ -17,7 +17,8 @@ class App extends Component {
         // The signed-in user info.
         const user = result.user;
         this.setState({
-          user: user.uid
+          user: user.uid,
+          userName: user.email
         });
         this.checkForUserCollection(user.uid);
         // ...
@@ -42,7 +43,7 @@ class App extends Component {
       .auth()
       .signOut()
       .then( ()=> {
-        this.setState({toDoArray: [], completeArray:[]})
+        this.setState({toDoArray: [], completeArray:[], userName:"", user:""})
         // Sign-out successful.
       })
       .catch(function(error) {
@@ -91,7 +92,10 @@ class App extends Component {
   }
 
   handleChange = event => {
-    this.setState({ editValue: event.target.value });
+    // event.preventDefault();
+    // const trimmedValue = event.target.value.trim();
+    this.setState({ editValue: event.target.value }) ;
+    // return trimmedValue.lenth ? : null
   };
 
   handleSubmit = event => {
@@ -101,7 +105,10 @@ class App extends Component {
 
   addToDo = () => {
     this.setState(state => {
-      const toDoArray = [...state.toDoArray, state.editValue];
+      const trimmedValue = state.editValue.trim();
+      let toDoArray = state.toDoArray
+
+      if (trimmedValue){ toDoArray= [...state.toDoArray, trimmedValue]};
       return {
         toDoArray,
         editValue: ""
@@ -143,10 +150,24 @@ class App extends Component {
     alert("your ToDo has been saved")
   }
 
+  handleEdit =(key)=> {
+    this.setState(state=>{
+      const editValue = state.toDoArray[key]
+      return { editValue }
+
+    })
+  }
+
+  loggedIn = ()=> {
+    return this.state.userName ? <nav>{`Logged in as ${this.state.userName}`}</nav> : null
+  }
+
   render() {
     return (
       <div className="App">
+        
         <header className="App-header">
+          {this.loggedIn()}
           <h2>Hey Guys Make a To Do list</h2>
           <form onSubmit={this.handleSubmit}>
             <input
@@ -166,6 +187,10 @@ class App extends Component {
                 <FontAwesomeIcon
                   icon={faOtter}
                   onClick={() => this.handleComplete(key)}
+                />
+                <FontAwesomeIcon
+                icon={faHammer}
+                onClick={()=>this.handleEdit(key)}
                 />
               </li>
             );
