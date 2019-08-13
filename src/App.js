@@ -87,7 +87,7 @@ class App extends Component {
               const addedCompleteArray = querySnapshot.data().complete;
               const completeArray = [
                 ...this.state.completeArray,
-                ...addedCompleteArray
+                addedCompleteArray
               ];
               this.setState({ toDoArray, completeArray });
             });
@@ -100,13 +100,14 @@ class App extends Component {
   };
 
   createUserCollection(userToken) {
-    firestore
-      .collection("user")
-      .doc(userToken)
-      .set({
-        toDo: this.state.toDoArray,
-        complete: this.state.completeArray
-      });
+    if (this.state.toDoArray)
+      firestore
+        .collection("user")
+        .doc(userToken)
+        .set({
+          toDo: this.state.toDoArray,
+          complete: this.state.completeArray
+        });
   }
 
   handleChange = event => {
@@ -145,6 +146,15 @@ class App extends Component {
     });
   };
 
+  handleDeleteComplete = key => {
+    this.setState(state => {
+      const completeArray = state.completeArray.filter((item, j) => key !== j);
+      return {
+        completeArray
+      };
+    });
+  };
+
   handleComplete = key => {
     this.setState(state => {
       const completeArray = [...state.completeArray, state.toDoArray[key]];
@@ -174,8 +184,9 @@ class App extends Component {
 
   handleEdit = key => {
     this.setState(state => {
+      const toDoArray = state.toDoArray.filter((item, j) => key !== j);
       const editValue = state.toDoArray[key];
-      return { editValue };
+      return { editValue, toDoArray };
     });
   };
 
@@ -200,7 +211,7 @@ class App extends Component {
           </form>
           {this.state.toDoArray.map((todo, key) => {
             return (
-              <li key={key}>
+              <li key={todo}>
                 {todo}
                 <FontAwesomeIcon
                   icon={faKiwiBird}
@@ -223,17 +234,18 @@ class App extends Component {
           <button onClick={() => this.saveToDo(this.state.user)}>
             Save your To do
           </button>
-          {this.state.completeArray.map((todo, key) => {
+          <h2>Completed Tasks</h2>
+          {this.state.completeArray.map((todo, index) => {
             return (
-              <li key={key}>
+              <li key={index}>
                 {todo}
                 <FontAwesomeIcon
                   icon={faKiwiBird}
-                  onClick={() => this.handleDelete(key)}
+                  onClick={() => this.handleDeleteComplete(index)}
                 />
                 <FontAwesomeIcon
                   icon={faOtter}
-                  onClick={() => this.handleUnComplete(key)}
+                  onClick={() => this.handleUnComplete(index)}
                 />
               </li>
             );
