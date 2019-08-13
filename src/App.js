@@ -1,11 +1,21 @@
 import React, { Component } from "react";
 import "./App.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faKiwiBird , faOtter, faHammer} from "@fortawesome/free-solid-svg-icons";
+import {
+  faKiwiBird,
+  faOtter,
+  faHammer
+} from "@fortawesome/free-solid-svg-icons";
 import firebase, { provider, firestore } from "./firebase";
 
 class App extends Component {
-  state = { editValue: "", toDoArray: [] , user:"", completeArray:[], userName:""};
+  state = {
+    editValue: "",
+    toDoArray: [],
+    user: "",
+    completeArray: [],
+    userName: ""
+  };
 
   signIn = () => {
     firebase
@@ -36,14 +46,18 @@ class App extends Component {
       });
   };
 
-
   signOut = () => {
     console.log("testing signout");
     firebase
       .auth()
       .signOut()
-      .then( ()=> {
-        this.setState({toDoArray: [], completeArray:[], userName:"", user:""})
+      .then(() => {
+        this.setState({
+          toDoArray: [],
+          completeArray: [],
+          userName: "",
+          user: ""
+        });
         // Sign-out successful.
       })
       .catch(function(error) {
@@ -69,9 +83,12 @@ class App extends Component {
             .get()
             .then(querySnapshot => {
               const addedArray = querySnapshot.data().toDo;
-              const toDoArray = [...this.state.toDoArray, ...addedArray]
+              const toDoArray = [...this.state.toDoArray, ...addedArray];
               const addedCompleteArray = querySnapshot.data().complete;
-              const completeArray=[...this.state.completeArray, ...addedCompleteArray]
+              const completeArray = [
+                ...this.state.completeArray,
+                ...addedCompleteArray
+              ];
               this.setState({ toDoArray, completeArray });
             });
         }
@@ -87,14 +104,15 @@ class App extends Component {
       .collection("user")
       .doc(userToken)
       .set({
-        toDo: this.state.toDoArray, complete: this.state.completeArray
+        toDo: this.state.toDoArray,
+        complete: this.state.completeArray
       });
   }
 
   handleChange = event => {
     // event.preventDefault();
     // const trimmedValue = event.target.value.trim();
-    this.setState({ editValue: event.target.value }) ;
+    this.setState({ editValue: event.target.value });
     // return trimmedValue.lenth ? : null
   };
 
@@ -106,9 +124,11 @@ class App extends Component {
   addToDo = () => {
     this.setState(state => {
       const trimmedValue = state.editValue.trim();
-      let toDoArray = state.toDoArray
+      let toDoArray = state.toDoArray;
 
-      if (trimmedValue){ toDoArray= [...state.toDoArray, trimmedValue]};
+      if (trimmedValue) {
+        toDoArray = [...state.toDoArray, trimmedValue];
+      }
       return {
         toDoArray,
         editValue: ""
@@ -127,45 +147,47 @@ class App extends Component {
 
   handleComplete = key => {
     this.setState(state => {
-      const completeArray = [...state.completeArray, state.toDoArray[key]]
+      const completeArray = [...state.completeArray, state.toDoArray[key]];
       const toDoArray = state.toDoArray.filter((item, j) => key !== j);
       return {
-        toDoArray, completeArray
-      }
-    })
-  }
+        toDoArray,
+        completeArray
+      };
+    });
+  };
 
   handleUnComplete = key => {
     this.setState(state => {
-      const  toDoArray = [...state.toDoArray, state.completeArray[key]]
+      const toDoArray = [...state.toDoArray, state.completeArray[key]];
       const completeArray = state.completeArray.filter((item, j) => key !== j);
       return {
-        toDoArray, completeArray
-      }
-    })
-  }
+        toDoArray,
+        completeArray
+      };
+    });
+  };
 
-  saveToDo =(user)=>{
+  saveToDo = user => {
     this.createUserCollection(user);
-    alert("your ToDo has been saved")
-  }
+    alert("your ToDo has been saved");
+  };
 
-  handleEdit =(key)=> {
-    this.setState(state=>{
-      const editValue = state.toDoArray[key]
-      return { editValue }
+  handleEdit = key => {
+    this.setState(state => {
+      const editValue = state.toDoArray[key];
+      return { editValue };
+    });
+  };
 
-    })
-  }
-
-  loggedIn = ()=> {
-    return this.state.userName ? <nav>{`Logged in as ${this.state.userName}`}</nav> : null
-  }
+  loggedIn = () => {
+    return this.state.userName ? (
+      <nav>{`Logged in as ${this.state.userName}`}</nav>
+    ) : null;
+  };
 
   render() {
     return (
       <div className="App">
-        
         <header className="App-header">
           {this.loggedIn()}
           <h2>Hey Guys Make a To Do list</h2>
@@ -189,8 +211,8 @@ class App extends Component {
                   onClick={() => this.handleComplete(key)}
                 />
                 <FontAwesomeIcon
-                icon={faHammer}
-                onClick={()=>this.handleEdit(key)}
+                  icon={faHammer}
+                  onClick={() => this.handleEdit(key)}
                 />
               </li>
             );
@@ -198,7 +220,9 @@ class App extends Component {
 
           <button onClick={this.signIn}>Sign In</button>
           <button onClick={this.signOut}>Sign Out</button>
-          <button onClick={()=>this.saveToDo(this.state.user)}>Save your To do</button>
+          <button onClick={() => this.saveToDo(this.state.user)}>
+            Save your To do
+          </button>
           {this.state.completeArray.map((todo, key) => {
             return (
               <li key={key}>
@@ -212,7 +236,7 @@ class App extends Component {
                   onClick={() => this.handleUnComplete(key)}
                 />
               </li>
-            )
+            );
           })}
         </header>
       </div>
