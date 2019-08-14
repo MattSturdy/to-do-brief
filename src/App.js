@@ -7,6 +7,8 @@ import {
   faHammer
 } from "@fortawesome/free-solid-svg-icons";
 import firebase, { provider, firestore } from "./firebase";
+import SwipeableList from "./Components/SwipeableList";
+import ListContainer from "./Containers/ListContainer";
 
 class App extends Component {
   state = {
@@ -195,7 +197,9 @@ class App extends Component {
       <nav>{`Logged in as ${this.state.userName}`}</nav>
     ) : null;
   };
+  /*/////////////////////////////////////////////swipeable code below////////////////////////////////////////////////////*/
 
+  /*/////////////////////////////////////////////swipeable code above////////////////////////////////////////////////////*/
   render() {
     return (
       <div className="App">
@@ -250,6 +254,11 @@ class App extends Component {
               </li>
             );
           })}
+          <ListContainer>
+            <SwipeableList>barry</SwipeableList>
+            <SwipeableList>larry</SwipeableList>
+            <SwipeableList>farry</SwipeableList>
+          </ListContainer>
         </header>
       </div>
     );
