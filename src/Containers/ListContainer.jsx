@@ -1,18 +1,18 @@
 import React, { Component } from "react";
-import "./ListContainer.scss";
+import styles from "./ListContainer.module.scss";
 
 class SwipeableList extends Component {
   render() {
-    const { children } = this.props;
+    // const { children } = this.props;
 
-    const childrenWithProps = React.Children.map(children, child => {
-      if (!child.props.background) {
-        return React.cloneElement(child, { background: this.props.background });
-      }
-      return child;
-    });
+    // const childrenWithProps = React.Children.map(children, child => {
+    //   if (!child.props.background) {
+    //     return React.cloneElement(child, { background: this.props.background });
+    //   }
+    //   return child;
+    // });
 
-    return <div className="List">{childrenWithProps}</div>;
+    return <div className={styles.List}>{this.props.children}</div>;
   }
 }
 
