@@ -183,7 +183,7 @@ class App extends Component {
 
   saveToDo = user => {
     this.createUserCollection(user);
-    alert("your ToDo has been saved");
+    alert("your To-Do list is saved");
   };
 
   handleEdit = key => {

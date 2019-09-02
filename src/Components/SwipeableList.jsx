@@ -1,4 +1,4 @@
-import "./SwipeableList.scss";
+import styles from "./SwipeableList.module.scss";
 
 import React, { Component } from "react";
 
@@ -42,7 +42,7 @@ class SwipeableListItem extends Component {
   onDragStart = clientX => {
     this.dragged = true;
     this.dragStartX = clientX;
-    this.listElement.className = "ListItem";
+    this.listElement.className = styles.ListItem;
     this.startTime = Date.now();
     requestAnimationFrame(this.updatePosition);
   };
@@ -71,7 +71,7 @@ class SwipeableListItem extends Component {
         this.left = 0;
       }
 
-      this.listElement.className = "BouncingListItem";
+      this.listElement.className = styles.BouncingListItem;
       this.listElement.style.transform = `translateX(${this.left}px)`;
     }
   };
@@ -127,8 +127,11 @@ class SwipeableListItem extends Component {
   render() {
     return (
       <>
-        <div className="Wrapper" ref={div => (this.wrapper = div)}>
-          <div ref={div => (this.background = div)} className="Background">
+        <div className={styles.Wrapper} ref={div => (this.wrapper = div)}>
+          <div
+            ref={div => (this.background = div)}
+            className={styles.Background}
+          >
             {this.props.background ? (
               this.props.background
             ) : (
@@ -140,7 +143,7 @@ class SwipeableListItem extends Component {
             ref={div => (this.listElement = div)}
             onMouseDown={this.onDragStartMouse}
             onTouchStart={this.onDragStartTouch}
-            className="ListItem"
+            className={styles.ListItem}
           >
             {this.props.children}
           </div>
