@@ -2,9 +2,11 @@ import React, { Component } from "react";
 import "./App.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faKiwiBird,
-  faOtter,
-  faHammer
+
+  faTrashAlt,
+  faClipboardCheck,
+  faClipboard,
+  faEdit
 } from "@fortawesome/free-solid-svg-icons";
 import firebase, { provider, firestore } from "./firebase";
 import SwipeableList from "./Components/SwipeableList";
@@ -35,7 +37,7 @@ class App extends Component {
         this.checkForUserCollection(user.uid);
         // ...
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
         // Handle Errors here.
         // var errorCode = error.code;
@@ -62,7 +64,7 @@ class App extends Component {
         });
         // Sign-out successful.
       })
-      .catch(function(error) {
+      .catch(function (error) {
         // An error happened.
       });
   };
@@ -95,7 +97,7 @@ class App extends Component {
             });
         }
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log("Error getting document:", error);
         return null;
       });
@@ -213,25 +215,32 @@ class App extends Component {
               onChange={this.handleChange}
             />
           </form>
-          {this.state.toDoArray.map((todo, key) => {
-            return (
-              <li key={todo}>
-                {todo}
-                <FontAwesomeIcon
-                  icon={faKiwiBird}
-                  onClick={() => this.handleDelete(key)}
-                />
-                <FontAwesomeIcon
-                  icon={faOtter}
-                  onClick={() => this.handleComplete(key)}
-                />
-                <FontAwesomeIcon
-                  icon={faHammer}
-                  onClick={() => this.handleEdit(key)}
-                />
-              </li>
-            );
-          })}
+          <ul>
+            {this.state.toDoArray.map((todo, key) => {
+              return (
+                <li key={todo}>
+                  {todo}
+                  <div>
+                    <FontAwesomeIcon
+                      className="icon"
+                      icon={faTrashAlt}
+                      onClick={() => this.handleDelete(key)}
+                    />
+                    <FontAwesomeIcon
+                      className="icon"
+                      icon={faClipboardCheck}
+                      onClick={() => this.handleComplete(key)}
+                    />
+                    <FontAwesomeIcon
+                      className="icon"
+                      icon={faEdit}
+                      onClick={() => this.handleEdit(key)}
+                    />
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
 
           <button onClick={this.signIn}>Sign In</button>
           <button onClick={this.signOut}>Sign Out</button>
@@ -239,26 +248,32 @@ class App extends Component {
             Save your To do
           </button>
           <h2>Completed Tasks</h2>
-          {this.state.completeArray.map((todo, index) => {
-            return (
-              <li key={index}>
-                {todo}
-                <FontAwesomeIcon
-                  icon={faKiwiBird}
-                  onClick={() => this.handleDeleteComplete(index)}
-                />
-                <FontAwesomeIcon
-                  icon={faOtter}
-                  onClick={() => this.handleUnComplete(index)}
-                />
-              </li>
-            );
-          })}
-          <ListContainer>
-            <SwipeableList>barry</SwipeableList>
-            <SwipeableList>larry</SwipeableList>
-            <SwipeableList>farry</SwipeableList>
-          </ListContainer>
+          <ul>
+            {this.state.completeArray.map((todo, index) => {
+              return (
+                <li className="complete" key={index}>
+                  {todo}
+                  <div>
+                    <FontAwesomeIcon
+                      className="icon"
+                      icon={faTrashAlt}
+                      onClick={() => this.handleDeleteComplete(index)}
+                    />
+                    <FontAwesomeIcon
+                      className="icon"
+                      icon={faClipboard}
+                      onClick={() => this.handleUnComplete(index)}
+                    />
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+          {/* <ListContainer>
+            <SwipeableList>eggs</SwipeableList>
+            <SwipeableList>milk</SwipeableList>
+            <SwipeableList>bread</SwipeableList>
+          </ListContainer> */}
         </header>
       </div>
     );

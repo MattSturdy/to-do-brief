@@ -31,3 +31,25 @@
     transform: rotate(360deg);
   }
 }
+
+.icon{
+  margin: 0px 5px;
+}
+
+ul{
+  display: flex;
+  flex-direction: column;
+  justify-content: left;
+}
+li{
+  display: flex;
+  justify-content: space-between;
+}
+button{
+  margin-top:5px;
+  border-radius: 15px;
+}
+.complete{
+
+  text-decoration: line-through;
+}
