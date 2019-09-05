@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import "./App.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-
   faTrashAlt,
   faClipboardCheck,
   faClipboard,
@@ -37,7 +36,7 @@ class App extends Component {
         this.checkForUserCollection(user.uid);
         // ...
       })
-      .catch(function (error) {
+      .catch(function(error) {
         console.log(error);
         // Handle Errors here.
         // var errorCode = error.code;
@@ -64,7 +63,7 @@ class App extends Component {
         });
         // Sign-out successful.
       })
-      .catch(function (error) {
+      .catch(function(error) {
         // An error happened.
       });
   };
@@ -97,7 +96,7 @@ class App extends Component {
             });
         }
       })
-      .catch(function (error) {
+      .catch(function(error) {
         console.log("Error getting document:", error);
         return null;
       });
@@ -269,11 +268,6 @@ class App extends Component {
               );
             })}
           </ul>
-          {/* <ListContainer>
-            <SwipeableList>eggs</SwipeableList>
-            <SwipeableList>milk</SwipeableList>
-            <SwipeableList>bread</SwipeableList>
-          </ListContainer> */}
         </header>
       </div>
     );
